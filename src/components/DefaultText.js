@@ -7,6 +7,7 @@ export default function DefaultText({children, style}) {
 }
 const styles = StyleSheet.create({
     text: {
-        fontFamily: 'roboto-mono'
+        fontFamily: 'roboto-mono',
+        textAlign: 'center'
     }
 });

@@ -1,11 +1,22 @@
-import React from 'react';
-import {Button, StyleSheet, View, ScrollView, Text, Image} from 'react-native';
-import {HeaderButton, HeaderButtons, Item} from 'react-navigation-header-buttons';
+import React, {useEffect, useCallback} from 'react';
+import {StyleSheet, View, ScrollView, Text, Image} from 'react-native';
+import { HeaderButtons, Item} from 'react-navigation-header-buttons';
 import CustomHeaderButton from "../components/HeaderButton";
 import DefaultText from "../components/DefaultText";
+import {useDispatch, useSelector} from "react-redux";
+import {toggleFavorite} from "../store/actions/meals";
+
 export default function MealDetailScreen({navigation}){
     const meal = navigation.getParam('item');
-
+    const dispatch = useDispatch();
+    const currentMealIsFavorite = useSelector(state => state.meals.favoriteMeals.some(item => item.id === meal.id));
+    const toggleFavoriteHandler = useCallback(() => dispatch(toggleFavorite(meal.id)), [dispatch, meal.id]);
+    useEffect(() => {
+        navigation.setParams({toggleFavoriteHandler});
+    }, [toggleFavoriteHandler]);
+    useEffect(() => {
+        navigation.setParams({isFavorite: currentMealIsFavorite});
+    }, [currentMealIsFavorite]);
     return (
         <ScrollView>
             <Image source={{uri: meal.imageUrl}} style={styles.image}/>
@@ -70,10 +81,12 @@ const styles = StyleSheet.create({
 });
 MealDetailScreen.navigationOptions = (navigationData) => {
     const meal = navigationData.navigation.getParam('item');
+    const toggleFavorite = navigationData.navigation.getParam('toggleFavoriteHandler');
+    const isFavorite = navigationData.navigation.getParam('isFavorite');
     return {
         headerTitle: meal.title.length > 20 ? meal.title.substr(0, 20) + '...' : meal.title,
         headerRight: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-            <Item title="Favorite" iconName="ios-star" onPress={() => {}}/>
+            <Item title="Favorite" iconName={isFavorite ? 'ios-star' : 'ios-star-outline'} onPress={toggleFavorite}/>
         </HeaderButtons>
     }
 }

@@ -3,6 +3,9 @@ import {StyleSheet, Switch, Text, View} from 'react-native';
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/HeaderButton";
 import Colors from "../consts/Colors";
+import {useDispatch} from "react-redux";
+import {setFilters} from "../store/actions/meals";
+
 const FilterSwitch = ({onValueChange, value, label}) => {
     return (
         <View style={styles.filterContainer}>
@@ -18,6 +21,7 @@ export default function FiltersScreen({navigation}){
     const [isVegetarian, setIsVegetarian] = useState(false);
     const [isLactoseFree, setIsLactoseFree] = useState(false);
     const [isVegan, setIsVegan] = useState(false);
+    const dispatch = useDispatch();
 
     const saveFilters = useCallback(() => {
         const appliedFilters = {
@@ -26,8 +30,8 @@ export default function FiltersScreen({navigation}){
             isVegan,
             isLactoseFree
         }
-        console.log(appliedFilters);
-    }, [isGlutenFree, isVegetarian, isVegan, isLactoseFree]);
+        dispatch(setFilters(appliedFilters));
+    }, [isGlutenFree, isVegetarian, isVegan, isLactoseFree, dispatch]);
 
     useEffect(() => {
         //This will be merged with my current params normaly

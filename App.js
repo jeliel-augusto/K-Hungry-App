@@ -3,7 +3,17 @@ import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from "expo";
 import MealsNavigator from "./src/navigation/MealsNavigator";
+import { Provider } from "react-redux";
+import { createStore, combineReducers } from "redux";
+import mealsReducer from "./src/store/reducers/meals";
+
 import { enableScreens } from "react-native-screens";
+
+const rootReducer = combineReducers({
+  meals: mealsReducer
+});
+const store = createStore(rootReducer);
+
 enableScreens(); //It's a good practice to use and enable native screens
 const loadFonts = () => {
     return Font.loadAsync({
@@ -20,7 +30,9 @@ export default function App() {
     )
   }
   return (
-      <MealsNavigator />
+      <Provider store={store}>
+        <MealsNavigator />
+      </Provider>
   );
 }
 
